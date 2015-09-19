@@ -1,0 +1,19 @@
+{
+  "name": "keyboard-race",
+  "version": "0.0.1",
+  "authors": [
+    "Maxim Tolochko <maksim.tolo@gmail.com>"
+  ],
+  "description": "game & typing tutor",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}

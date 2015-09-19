@@ -1,0 +1,11 @@
+{
+  "name": "keyboard-race",
+  "version": "1.0.0",
+  "description": "game & typing tutor",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Maksim.tolo@gmail.com",
+  "license": "MIT"
+}
