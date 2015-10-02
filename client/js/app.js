@@ -1,28 +1,28 @@
-"use strict";
+'use strict';
 
-var io = io.connect('http://localhost:3000');
+let keyboardRaceApp = angular
+  .module('keyboardRaceApp', ['ngMaterial', 'ui.router', 'ui.ace'])
+  .config(['$stateProvider', '$urlRouterProvider', Config])
+  .run(['$rootScope', Run]);
 
-class App {
-  constructor(io, $) {
-    let me = this;
+function Config($stateProvider, $urlRouterProvider) {
+  $urlRouterProvider.otherwise("/home");
 
-    io.on('startGame', function(data) {
-      console.log(data);
+  $stateProvider
+    .state('home', {
+      url: "/home",
+      templateUrl: "./js/pages/home/home.template.html",
+      controller: "HomeCtrl",
+      controllerAs: 'homeCtrl'
+    })
+    .state('game', {
+      url: "/game",
+      templateUrl: "./js/pages/game/game.template.html",
+      controller: "GameCtrl",
+      controllerAs: 'gameCtrl'
     });
-    io.on('updateStatus', function(data) {
-      console.log(data);
-    });
-    $('#qwe').on('click', function() {
-      io.emit('findOpponents', {
-        numberOfOpponents: 1
-      });
-    });
-    $('#asd').on('click', function() {
-      io.emit('updateStatus', {
-        qwe: 'qwe'
-      });
-    });
-  }
 }
 
-new App(io, $);
+function Run($rootScope) {
+  $rootScope.io = io.connect('http://localhost:3000');
+}

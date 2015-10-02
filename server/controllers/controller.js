@@ -1,5 +1,7 @@
 "use strict";
 
+let request = require('request');
+
 module.exports = class {
   constructor() {
     this.availableUsers = {};
@@ -36,7 +38,6 @@ module.exports = class {
   }
   startGame(users) {
     let roomId = this.generateUniqueId(this.rooms);
-
     this.rooms[roomId] = users;
     this.joinRoom(roomId);
     console.log('Created new room: ' + roomId);
@@ -44,10 +45,23 @@ module.exports = class {
   joinRoom(roomId) {
     this.rooms[roomId].forEach((user) => {
       user.io.join(roomId);
-      user.io.emit('startGame', {
-        data: 'В сети за минувшие сутки: производительность LG Nexus 5X оценили с помощью бенчмарка; Microsoft Lumia 950 XL действительно получит QHD-экран и Qualcomm Snapdragon 810; Nexus 5 и 6 начнут получать Android 6.0 уже 5 октября; LG подтвердила анонс V10 с двойной фронтальной камерой 1 октября; смартфон BlackBerry Venice на Android будет представлен под названием Priv; толщина смартфона Doogee T6 с аккумулятором на 6 000 мАч составляет всего 10,2 мм.'
+
+      //@TODO: numberOfWords to variable
+      this.getText(20, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          let text = body.slice(3, -4).trim(),
+              words = text.split(' ');
+
+          user.io.emit('startGame', {
+            text: text,
+            words: words,
+            numberOfWords: words.length,
+            numberOfPlayers: this.rooms[roomId].length
+          });
+        }
       });
       user.io.on('updateStatus', (data) => user.io.room(roomId).broadcast('updateStatus', data));
+      user.io.on('message', (data) => user.io.room(roomId).broadcast('message', data));
       user.io.on('disconnect', () => this.endGame(user, roomId));
     });
   }
@@ -69,5 +83,15 @@ module.exports = class {
       roomId = Date.now().toString();
     }
     return roomId;
+  }
+  getText(numberOfWords, callback) {
+    request.post('http://online-generators.ru/ajax.php', {
+      form: {
+        paragraph: '1',
+        word: numberOfWords,
+        type: 'prose',
+        processor: 'text'
+      }
+    }, callback);
   }
 };

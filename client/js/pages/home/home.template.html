@@ -1,0 +1,11 @@
+<md-input-container flex>
+    <label>User name</label>
+    <input ng-model="homeCtrl.userName" required ng-disabled="homeCtrl.loading">
+</md-input-container>
+<md-radio-group ng-model="homeCtrl.numberOfOpponents">
+    <md-radio-button value="1" ng-disabled="homeCtrl.loading">1</md-radio-button>
+    <md-radio-button value="2" ng-disabled="homeCtrl.loading">2</md-radio-button>
+    <md-radio-button value="3" ng-disabled="homeCtrl.loading">3</md-radio-button>
+</md-radio-group>
+<md-button class="md-raised" ng-click="homeCtrl.findOpponents()" ng-disabled="!homeCtrl.userName || homeCtrl.loading">Find Opponents</md-button>
+<md-progress-circular md-mode="{{homeCtrl.loading}}"></md-progress-circular>

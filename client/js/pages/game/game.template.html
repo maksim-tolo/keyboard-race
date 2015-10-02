@@ -1,0 +1,12 @@
+<md-slider ng-model="keyboardRaceCtrl.currentPosition" min="0" max="{{keyboardRaceCtrl.numberOfWords}}"></md-slider>
+<md-button class="md-raised" ng-click="keyboardRaceCtrl.sendMessage()">Send message</md-button>
+<md-input-container flex>
+    <label>First name</label>
+    <input ng-model="user.firstName">
+</md-input-container>
+<!--<div ui-ace="{
+  useWrapMode : true,
+  showGutter: false,
+  theme:'twilight',
+  mode: 'markdown'
+}"></div>-->
