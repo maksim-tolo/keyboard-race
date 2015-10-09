@@ -8,7 +8,7 @@ module.exports = class {
     this.rooms = {};
   }
   findOpponents(req) {
-    console.log('New user available: ' + req.socket.id);
+    console.log('New user available: ' + req.data.userName + ', ' + req.data.numberOfOpponents);
     this.availableUsers[req.socket.id] = req;
     req.io.on('disconnect', () => delete this.availableUsers[req.socket.id]);
     this.findPlayersWithTheSameNumberOfOpponents();
@@ -40,48 +40,62 @@ module.exports = class {
     let roomId = this.generateUniqueId(this.rooms);
     this.rooms[roomId] = users;
     this.joinRoom(roomId);
-    console.log('Created new room: ' + roomId);
+
+    //@TODO: numberOfWords to variable
+    this.getText(20, (error, response, body) => {
+      if (!error && response.statusCode == 200) {
+        this.rooms[roomId].forEach((user) => {
+          user.io.emit('startGame', {
+            words: body.slice(3, -4).trim().split(' '),
+            numberOfWords: words.length,
+            opponents: this.getOpponents(roomId, user.socket.id)
+          });
+        });
+      }
+    });
   }
   joinRoom(roomId) {
     this.rooms[roomId].forEach((user) => {
       user.io.join(roomId);
-
-      //@TODO: numberOfWords to variable
-      this.getText(20, function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-          let text = body.slice(3, -4).trim(),
-              words = text.split(' ');
-
-          user.io.emit('startGame', {
-            text: text,
-            words: words,
-            numberOfWords: words.length,
-            numberOfPlayers: this.rooms[roomId].length
-          });
-        }
+      user.io.on('updateStatus', (data) => {
+        data.userId = user.socket.id;
+        user.io.room(roomId).broadcast('updateStatus', data)
       });
-      user.io.on('updateStatus', (data) => user.io.room(roomId).broadcast('updateStatus', data));
       user.io.on('message', (data) => user.io.room(roomId).broadcast('message', data));
       user.io.on('disconnect', () => this.endGame(user, roomId));
     });
+
+    console.log('Created new room: ' + roomId);
   }
   endGame(leavedUser, roomId) {
     if (this.rooms[roomId]) {
-      this.rooms[roomId].forEach((user) => {
-        if (user !== leavedUser) {
-          user.io.leave(roomId);
-          user.io.emit('endGame', {}); //TODO
-        }
-      });
-      delete this.rooms[roomId];
+      if (this.rooms[roomId].length < 3) {
+        this.rooms[roomId].forEach((user) => {
+          if (user !== leavedUser) {
+            user.io.leave(roomId);
+            user.io.emit('endGame', {}); //TODO
+          }
+        });
+        delete this.rooms[roomId];
+      } else {
+        let deletedIndex;
+        this.rooms[roomId].forEach((user, index) => {
+          if (user === leavedUser) {
+            deletedIndex = index;
+          }
+        });
+        this.rooms[roomId].splice(deletedIndex, 1);
+      }
       console.log('Users leaved from the room: ' + roomId);
     }
   }
   generateUniqueId(rooms) {
     let roomId = Date.now().toString();
+
     while (rooms[roomId]) {
       roomId = Date.now().toString();
     }
+
     return roomId;
   }
   getText(numberOfWords, callback) {
@@ -93,5 +107,20 @@ module.exports = class {
         processor: 'text'
       }
     }, callback);
+  }
+  getOpponents(roomId, userId) {
+    let opponents = [];
+
+    this.rooms[roomId].forEach((user) => {
+      if (user.socket.id !== userId) {
+        opponents.push({
+          userName: user.data.userName,
+          userId: user.socket.id,
+          position: 0
+        });
+      }
+    });
+
+    return opponents;
   }
 };

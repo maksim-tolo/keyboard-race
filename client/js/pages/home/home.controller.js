@@ -9,12 +9,13 @@ class HomeCtrl {
     this.io = $rootScope.io;
     this.numberOfOpponents = 1;
     this.io.on('startGame', function(data) {
-      $state.go('game', data);
+      $rootScope.gameData = data;
+      $state.go('game');
     });
   }
   findOpponents() {
     this.io.emit('findOpponents', {
-      numberOfOpponents: this.numberOfOpponents,
+      numberOfOpponents: +this.numberOfOpponents,
       userName: this.userName
     });
     this.loading='indeterminate';

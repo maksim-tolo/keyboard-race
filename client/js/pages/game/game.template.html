@@ -1,9 +1,20 @@
-<md-slider ng-model="keyboardRaceCtrl.currentPosition" min="0" max="{{keyboardRaceCtrl.numberOfWords}}"></md-slider>
-<md-button class="md-raised" ng-click="keyboardRaceCtrl.sendMessage()">Send message</md-button>
+<span ng-bind-html="gameCtrl.text"></span>
 <md-input-container flex>
-    <label>First name</label>
-    <input ng-model="user.firstName">
+    <label>Type text here</label>
+    <input ng-model="gameCtrl.userInput" ng-keyup="gameCtrl.compareWords($event)">
 </md-input-container>
+<div layout>
+    <div flex="10" layout layout-align="center center">
+        <span class="md-body-1">You</span>
+    </div>
+    <md-slider flex ng-model="gameCtrl.currentPosition" min="0" max="{{gameCtrl.numberOfWords}}" ng-change="gameCtrl.updateStatus()" ng-disabled="true"></md-slider>
+</div>
+<div layout ng-repeat="opponent in gameCtrl.opponents" >
+    <div flex="10" layout layout-align="center center">
+        <span class="md-body-1">{{opponent.userName}}</span>
+    </div>
+    <md-slider flex  ng-model="opponent.position" min="0" max="{{gameCtrl.numberOfWords}}" ng-disabled="true"></md-slider>
+</div>
 <!--<div ui-ace="{
   useWrapMode : true,
   showGutter: false,
