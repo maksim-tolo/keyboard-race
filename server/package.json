@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nvm use 4.1.0 && node server.js"
+    "start": "node server.js"
   },
   "author": "Maksim.tolo@gmail.com",
   "license": "MIT",
@@ -16,5 +16,8 @@
     "express.io": "^1.1.13",
     "morgan": "^1.6.1",
     "request": "^2.64.0"
+  },
+  "engines": {
+    "node": "4.1.1"
   }
 }
