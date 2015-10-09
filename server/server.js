@@ -27,4 +27,4 @@ class Server extends Express {
   }
 }
 
-new Server(3000);
+new Server(process.env.PORT || 3000);

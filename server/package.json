@@ -16,8 +16,5 @@
     "express.io": "^1.1.13",
     "morgan": "^1.6.1",
     "request": "^2.64.0"
-  },
-  "engines": {
-    "node": "4.1.1"
   }
 }
