@@ -45,8 +45,10 @@ module.exports = class {
     this.getText(20, (error, response, body) => {
       if (!error && response.statusCode == 200) {
         this.rooms[roomId].forEach((user) => {
+          let words = body.slice(3, -4).trim().split(' ');
+
           user.io.emit('startGame', {
-            words: body.slice(3, -4).trim().split(' '),
+            words: words,
             numberOfWords: words.length,
             opponents: this.getOpponents(roomId, user.socket.id)
           });
