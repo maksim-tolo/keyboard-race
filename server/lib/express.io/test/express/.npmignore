@@ -1,0 +1,9 @@
+node_modules/mkdirp/.gitignore.orig
+docs/
+examples/
+support/
+test/
+testing.js
+.DS_Store
+coverage.html
+lib-cov

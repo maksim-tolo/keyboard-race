@@ -1,6 +1,6 @@
 "use strict";
 
-let Express = require('express.io');
+let Express = require('./lib/express.io');
 let Router = require('./routes/router');
 
 class Server extends Express {

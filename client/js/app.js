@@ -24,5 +24,5 @@ function Config($stateProvider, $urlRouterProvider) {
 }
 
 function Run($rootScope) {
-  $rootScope.io = io.connect('http://localhost:3000');
+  $rootScope.io = io.connect('https://morning-plains-2106.herokuapp.com');
 }
