@@ -1,0 +1,59 @@
+/**
+        * Hide when Angular is not yet loaded and initialized
+        */
+/*[ng-cloak] {
+    display: none;
+}
+.ace_editor { height: 200px; }*/
+.highlighted-text {
+    background: yellow;
+}
+.game-text {
+    -webkit-user-select: none;
+}
+md-slider .md-thumb:after {
+    content: "";
+    background-image: url("../img/car.png");
+    background-size: 322px 100px;
+    background-color: transparent !important;
+    width: 322px;
+    height: 100px;
+    left: -300px;
+    top: -80px;
+    border: none;
+}
+md-slider .md-disabled-thumb {
+    border: none;
+}
+.user-name {
+    width: 250px;
+}
+.user-name span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 130px;
+    display: block;
+    padding: 0 10px 0 10px;
+}
+md-slider:before {
+    content: "";
+    background: url("../img/finish.gif") repeat-y;
+    width: 24px;
+    height: 48px;
+    top: -10px;
+    position: absolute;
+}
+.finish {
+    background: url("../img/finish.gif") repeat-y;
+    width: 24px;
+    height: 48px;
+    top: -10px;
+    left: -4px;
+    position: relative;
+    margin-right: 10px;
+}
+.results .md-avatar {
+    text-align: center;
+    padding-top: 20px;
+}

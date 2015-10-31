@@ -15,6 +15,7 @@ module.exports = class {
   }
   findPlayersWithTheSameNumberOfOpponents() {
     let map = {};
+
     for (let user in this.availableUsers) {
       if (map[this.availableUsers[user].data.numberOfOpponents] === undefined) {
         map[this.availableUsers[user].data.numberOfOpponents] = 0;
@@ -28,6 +29,7 @@ module.exports = class {
   }
   findPlayersByNumberOfOpponentsValue(numberOfOpponents) {
     let opponents = [];
+
     for (let user in this.availableUsers) {
       if (this.availableUsers[user].data.numberOfOpponents === numberOfOpponents) {
         opponents.push(this.availableUsers[user]);
@@ -41,7 +43,7 @@ module.exports = class {
     this.rooms[roomId] = users;
     this.joinRoom(roomId);
 
-    //@TODO: numberOfWords to variable
+    //@TODO: error handler, dynamic number of words
     this.getText(20, (error, response, body) => {
       if (!error && response.statusCode == 200) {
         this.rooms[roomId].forEach((user) => {
@@ -64,29 +66,31 @@ module.exports = class {
         user.io.room(roomId).broadcast('updateStatus', data)
       });
       user.io.on('message', (data) => user.io.room(roomId).broadcast('message', data));
-      user.io.on('disconnect', () => this.endGame(user, roomId));
+      user.io.on('disconnect', () => this.endGame(user, roomId, true));
+      user.io.on('endGame', () => this.endGame(user, roomId));
     });
 
     console.log('Created new room: ' + roomId);
   }
-  endGame(leavedUser, roomId) {
+  endGame(leavedUser, roomId, isDisconnected) {
     if (this.rooms[roomId]) {
-      if (this.rooms[roomId].length < 3) {
-        this.rooms[roomId].forEach((user) => {
-          if (user !== leavedUser) {
-            user.io.leave(roomId);
-            user.io.emit('endGame', {}); //TODO
-          }
+      let deletedIndex = this.rooms[roomId].indexOf(leavedUser);
+
+      if (deletedIndex >= 0) {
+        leavedUser.io.room(roomId).broadcast('userLeaved', {
+          userName: leavedUser.data.userName,
+          userId: leavedUser.socket.id,
+          isDisconnected: !!isDisconnected
         });
-        delete this.rooms[roomId];
-      } else {
-        let deletedIndex;
-        this.rooms[roomId].forEach((user, index) => {
-          if (user === leavedUser) {
-            deletedIndex = index;
-          }
-        });
+        leavedUser.io.leave(roomId);
         this.rooms[roomId].splice(deletedIndex, 1);
+      }
+
+      if (this.rooms[roomId].length === 1) {
+        this.rooms[roomId][0].io.leave(roomId);
+        delete this.rooms[roomId];
+      } else if (this.rooms[roomId].length === 0) {
+        delete this.rooms[roomId];
       }
       console.log('Users leaved from the room: ' + roomId);
     }

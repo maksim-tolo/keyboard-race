@@ -4,6 +4,7 @@ keyboardRaceApp.controller('HomeCtrl', ['$rootScope', '$state', function($rootSc
   return new HomeCtrl($rootScope, $state);
 }]);
 
+//TODO: find opponents by pressing on Enter key
 class HomeCtrl {
   constructor($rootScope, $state) {
     this.io = $rootScope.io;

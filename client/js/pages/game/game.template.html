@@ -1,23 +1,27 @@
-<span ng-bind-html="gameCtrl.text"></span>
+<span ng-bind-html="gameCtrl.text" class="game-text"></span>
 <md-input-container flex>
     <label>Type text here</label>
-    <input ng-model="gameCtrl.userInput" ng-keyup="gameCtrl.compareWords($event)">
+    <input ng-model="gameCtrl.userInput" ng-keyup="gameCtrl.compareWords($event)" ng-disabled="gameCtrl.currentPosition === gameCtrl.numberOfWords">
 </md-input-container>
 <div layout>
-    <div flex="10" layout layout-align="center center">
+    <div class="user-name">
         <span class="md-body-1">You</span>
     </div>
     <md-slider flex ng-model="gameCtrl.currentPosition" min="0" max="{{gameCtrl.numberOfWords}}" ng-change="gameCtrl.updateStatus()" ng-disabled="true"></md-slider>
+    <div class="finish"></div>
 </div>
-<div layout ng-repeat="opponent in gameCtrl.opponents" >
-    <div flex="10" layout layout-align="center center">
+<div layout ng-repeat="opponent in gameCtrl.opponents">
+    <div class="user-name">
         <span class="md-body-1">{{opponent.userName}}</span>
     </div>
     <md-slider flex  ng-model="opponent.position" min="0" max="{{gameCtrl.numberOfWords}}" ng-disabled="true"></md-slider>
+    <div class="finish"></div>
 </div>
-<!--<div ui-ace="{
-  useWrapMode : true,
-  showGutter: false,
-  theme:'twilight',
-  mode: 'markdown'
-}"></div>-->
+<md-subheader class="md-no-sticky">Results</md-subheader>
+<md-list-item class="md-3-line results" ng-repeat="result in gameCtrl.results track by $index">
+    <div class="md-avatar">{{$index + 1}}</div>
+    <div class="md-list-item-text" layout="column">
+        <h3>{{result.userName}}</h3>
+    </div>
+</md-list-item>
+<md-button class="md-raised" ng-click="gameCtrl.endGame()" ng-if="gameCtrl.currentPosition === gameCtrl.numberOfWords">Find new game</md-button>

@@ -10,5 +10,8 @@
   "license": "MIT",
   "single-instance": false,
   "chromium-args": "--enable-javascript-harmony",
-  "dependencies": {}
+  "dependencies": {},
+  "window": {
+    "toolbar": false
+  }
 }
